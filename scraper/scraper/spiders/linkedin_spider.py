@@ -46,15 +46,11 @@ class LinkedinSpider(CrawlSpider):
             "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[2]/text()"
         ).get()
 
+        description = response.xpath(
+            "/html/body/main/section[1]/section[3]/div/section/div"
+        ).extract_first()
         item["description"] = re.sub(
-            " +",
-            " ",
-            replace_tags(
-                response.xpath(
-                    "/html/body/main/section[1]/section[3]/div/section/div"
-                ).extract_first(),
-                " ",
-            ),
-        )
+            "( |\n)+", " ", replace_tags(description, " "),
+        ).strip()
 
         yield item
