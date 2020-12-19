@@ -21,3 +21,14 @@ class TutorialItem(scrapy.Item):
     articleLink = scrapy.Field()
     postingTime = scrapy.Field()
     recommendation = scrapy.Field()
+
+
+class JobDescriptionItem(scrapy.Item):
+    """
+    JobDescriptionItem is designed for storing structural content of vancancies.
+    """
+
+    title = scrapy.Field()
+    company = scrapy.Field()
+    location = scrapy.Field()
+    description = scrapy.Field()
