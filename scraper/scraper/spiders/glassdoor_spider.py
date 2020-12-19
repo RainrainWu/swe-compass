@@ -4,6 +4,8 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.html import replace_tags
 
+from scraper.items import JobDescriptionItem
+
 
 class GlassdoorSpider(CrawlSpider):
 

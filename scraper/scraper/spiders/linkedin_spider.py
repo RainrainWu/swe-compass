@@ -4,6 +4,8 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.html import replace_tags
 
+from scraper.items import JobDescriptionItem
+
 
 class LinkedinSpider(CrawlSpider):
 
@@ -35,22 +37,24 @@ class LinkedinSpider(CrawlSpider):
     )
 
     def parse_item(self, response):
-        item = {}
-        item["title"] = response.xpath(
+        jd_item = JobDescriptionItem()
+        jd_item["title"] = response.xpath(
             "/html/body/main/section[1]/section[2]/div[1]/div[1]/h1/text()"
         ).get()
-        item["company"] = response.xpath(
+        jd_item["company"] = response.xpath(
             "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[1]/a/text()"
         ).get()
-        item["location"] = response.xpath(
+        jd_item["location"] = response.xpath(
             "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[2]/text()"
         ).get()
 
         description = response.xpath(
             "/html/body/main/section[1]/section[3]/div/section/div"
         ).extract_first()
-        item["description"] = re.sub(
-            "( |\n)+", " ", replace_tags(description, " "),
+        jd_item["description"] = re.sub(
+            "( |\n)+",
+            " ",
+            replace_tags(description, " "),
         ).strip()
 
-        yield item
+        yield jd_item
