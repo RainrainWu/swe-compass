@@ -1,11 +1,8 @@
-import re
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from scrapy.loader import ItemLoader
-from w3lib.html import replace_tags
 
-from scraper.items import JobDescriptionItem
+from scraper.loaders import JobDescriptionLoader
 
 
 class GlassdoorSpider(CrawlSpider):
@@ -41,12 +38,49 @@ class GlassdoorSpider(CrawlSpider):
     )
 
     def parse_item(self, response):
-        loader = ItemLoader(item=JobDescriptionItem(), response=response)
+        loader = JobDescriptionLoader(response=response)
         loader.add_xpath(
             "title",
             "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[2]/text()",
         )
+        if not loader.get_collected_values("title"):
+            loader.add_xpath(
+                "title",
+                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[2]/text()",
+            )
+
+        loader.add_xpath(
+            "company",
+            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[1]/text()",
+        )
+        if not loader.get_collected_values("company"):
+            loader.add_xpath(
+                "company",
+                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[1]/text()",
+            )
+
+        loader.add_xpath(
+            "location",
+            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[3]/text()",
+        )
+        if not loader.get_collected_values("location"):
+            loader.add_xpath(
+                "location",
+                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[3]/text()",
+            )
+        
+        possible_description_xpaths = [
+            "/html/body/div[3]/div/div/div[1]/div[3]/div/div/div/div/div",
+            "/html/body/div[3]/div/div/div[1]/div[4]/div/div/div/div",
+            "/html/body/div[3]/div/div/div[1]/div[3]/div/div/div/div",
+        ]
+        for xpath in possible_description_xpaths:
+            loader.add_xpath("description", xpath)
+            if loader.get_collected_values("description"):
+                break
+
         return loader.load_item()
+
         """
         item = {}
         item["title"] = response.xpath(

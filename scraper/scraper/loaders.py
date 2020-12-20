@@ -7,6 +7,10 @@ from scraper.items import JobDescriptionItem
 
 
 class JobDescriptionLoader(ItemLoader):
+    """
+    JobDescriptionLoader is the loader with pre-defined output
+    processor for JobDescription item.
+    """
     @staticmethod
     def __flatten(digest):
         return re.sub(
