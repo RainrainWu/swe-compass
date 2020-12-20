@@ -1,10 +1,8 @@
-import re
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from w3lib.html import replace_tags
 
-from scraper.items import JobDescriptionItem
+from scraper.loaders import JobDescriptionLoader
 
 
 class LinkedinSpider(CrawlSpider):
@@ -37,7 +35,25 @@ class LinkedinSpider(CrawlSpider):
     )
 
     def parse_item(self, response):
-        jd_item = JobDescriptionItem()
+        loader = JobDescriptionLoader(response=response)
+        loader.add_xpath(
+            "title", "/html/body/main/section[1]/section[2]/div[1]/div[1]/h1/text()"
+        )
+        loader.add_xpath(
+            "company",
+            "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[1]/a/text()",
+        )
+        loader.add_xpath(
+            "location",
+            "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[2]/text()",
+        )
+        loader.add_xpath(
+            "description", "/html/body/main/section[1]/section[3]/div/section/div"
+        )
+        return loader.load_item()
+
+        """
+        jd_item = {}
         jd_item["title"] = response.xpath(
             "/html/body/main/section[1]/section[2]/div[1]/div[1]/h1/text()"
         ).get()
@@ -58,3 +74,4 @@ class LinkedinSpider(CrawlSpider):
         ).strip()
 
         yield jd_item
+        """
