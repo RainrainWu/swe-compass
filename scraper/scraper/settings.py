@@ -64,7 +64,7 @@ DOWNLOAD_DELAY = 0.25
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "scraper.pipelines.ScraperPipeline": 300,
-    "scraper.pipelines.ElasticsearchPipeline": 400,
+    # "scraper.pipelines.ElasticsearchPipeline": 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

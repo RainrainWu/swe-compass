@@ -2,6 +2,7 @@ import re
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
+from scrapy.loader import ItemLoader
 from w3lib.html import replace_tags
 
 from scraper.items import JobDescriptionItem
@@ -40,6 +41,13 @@ class GlassdoorSpider(CrawlSpider):
     )
 
     def parse_item(self, response):
+        loader = ItemLoader(item=JobDescriptionItem(), response=response)
+        loader.add_xpath(
+            "title",
+            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[2]/text()",
+        )
+        return loader.load_item()
+        """
         item = {}
         item["title"] = response.xpath(
             "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[2]/text()"
@@ -79,3 +87,4 @@ class GlassdoorSpider(CrawlSpider):
             "( |\n)+", " ", replace_tags(description, " ")
         ).strip()
         yield item
+        """
