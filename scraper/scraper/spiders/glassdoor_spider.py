@@ -68,7 +68,7 @@ class GlassdoorSpider(CrawlSpider):
                 "location",
                 "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[3]/text()",
             )
-        
+
         possible_description_xpaths = [
             "/html/body/div[3]/div/div/div[1]/div[3]/div/div/div/div/div",
             "/html/body/div[3]/div/div/div[1]/div[4]/div/div/div/div",
@@ -80,45 +80,3 @@ class GlassdoorSpider(CrawlSpider):
                 break
 
         return loader.load_item()
-
-        """
-        item = {}
-        item["title"] = response.xpath(
-            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[2]/text()"
-        ).get()
-        if not item["title"]:
-            item["title"] = response.xpath(
-                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[2]/text()"
-            ).get()
-
-        item["company"] = response.xpath(
-            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[1]/text()"
-        ).get()
-        if not item["company"]:
-            item["company"] = response.xpath(
-                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[1]/text()"
-            ).get()
-
-        item["location"] = response.xpath(
-            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[3]/text()"
-        ).get()
-        if not item["location"]:
-            item["location"] = response.xpath(
-                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[3]/text()"
-            ).get()
-
-        description = None
-        possible_xpathes = [
-            "/html/body/div[3]/div/div/div[1]/div[3]/div/div/div/div/div",
-            "/html/body/div[3]/div/div/div[1]/div[4]/div/div/div/div",
-            "/html/body/div[3]/div/div/div[1]/div[3]/div/div/div/div",
-        ]
-        for xpath in possible_xpathes:
-            description = response.xpath(xpath).extract_first()
-            if description:
-                break
-        item["description"] = re.sub(
-            "( |\n)+", " ", replace_tags(description, " ")
-        ).strip()
-        yield item
-        """
