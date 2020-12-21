@@ -6,9 +6,10 @@ from scraper.loaders import JobDescriptionLoader
 
 
 class GlassdoorSpider(CrawlSpider):
-
-    name = "glassdoor"
-    allowed_domains = ["www.glassdoor.com"]
+    """
+    GlassdoorSpider is a spider inherit from the generic CrawlSpider, and
+    responsible for vacancies scraping on Glassdoor,
+    """
 
     @staticmethod
     def __generate_start_urls(page_count: int = 1):
@@ -29,6 +30,8 @@ class GlassdoorSpider(CrawlSpider):
             )
         return start_urls
 
+    name = "glassdoor"
+    allowed_domains = ["www.glassdoor.com"]
     start_urls = __generate_start_urls.__func__(1)
     rules = (
         Rule(
@@ -36,47 +39,37 @@ class GlassdoorSpider(CrawlSpider):
             callback="parse_item",
         ),
     )
-
-    def parse_item(self, response):
-        loader = JobDescriptionLoader(response=response)
-        loader.add_xpath(
-            "title",
+    xpath_mappings = {
+        "title": [
             "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[2]/text()",
-        )
-        if not loader.get_collected_values("title"):
-            loader.add_xpath(
-                "title",
-                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[2]/text()",
-            )
-
-        loader.add_xpath(
-            "company",
+            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[2]/text()",
+        ],
+        "company": [
             "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[1]/text()",
-        )
-        if not loader.get_collected_values("company"):
-            loader.add_xpath(
-                "company",
-                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[1]/text()",
-            )
-
-        loader.add_xpath(
-            "location",
+            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[1]/text()",
+        ],
+        "location": [
             "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[3]/text()",
-        )
-        if not loader.get_collected_values("location"):
-            loader.add_xpath(
-                "location",
-                "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[3]/text()",
-            )
-
-        possible_description_xpaths = [
+            "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/div/div/div[3]/text()",
+        ],
+        "description": [
             "/html/body/div[3]/div/div/div[1]/div[3]/div/div/div/div/div",
             "/html/body/div[3]/div/div/div[1]/div[4]/div/div/div/div",
             "/html/body/div[3]/div/div/div[1]/div[3]/div/div/div/div",
-        ]
-        for xpath in possible_description_xpaths:
-            loader.add_xpath("description", xpath)
-            if loader.get_collected_values("description"):
-                break
+        ],
+    }
 
+    def parse_item(self, response):
+        """
+        parse_item is a callback handler for each response of glassdoor job post
+        the spider recieved. However, since the target data may locate in more
+        than one possible xpath, so we need to loop over all of item with the list
+        of possible xpaths until the extract result is not None.
+        """
+        loader = JobDescriptionLoader(response=response)
+        for mapping in self.__class__.xpath_mappings:
+            for xpath in self.__class__.xpath_mappings[mapping]:
+                loader.add_xpath(mapping, xpath)
+                if loader.get_collected_values(mapping):
+                    break
         return loader.load_item()

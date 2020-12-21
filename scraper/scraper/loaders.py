@@ -14,8 +14,12 @@ class JobDescriptionLoader(ItemLoader):
 
     @staticmethod
     def __flatten(digest):
+        """
+        __flatten is a string processor to flatten the hierarchical DOM tree
+        into plain text, and also strip redundant seperators.
+        """
         return re.sub(
-            "( | |\n|\r|\t)+",
+            "( | |\n|\r|\t)+",
             " ",
             replace_tags(digest, " "),
         ).strip()
