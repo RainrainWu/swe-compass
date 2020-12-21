@@ -7,8 +7,8 @@ from scraper.loaders import JobDescriptionLoader
 
 class LinkedinSpider(CrawlSpider):
     """
-    LinkedinSpider is a spider inherit from the generic CrawlSpider, and 
-    responsible for vacancies scraping on Linkedin, 
+    LinkedinSpider is a spider inherit from the generic CrawlSpider, and
+    responsible for vacancies scraping on Linkedin,
     """
 
     @staticmethod

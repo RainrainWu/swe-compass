@@ -7,8 +7,8 @@ from scraper.loaders import JobDescriptionLoader
 
 class GlassdoorSpider(CrawlSpider):
     """
-    GlassdoorSpider is a spider inherit from the generic CrawlSpider, and 
-    responsible for vacancies scraping on Glassdoor, 
+    GlassdoorSpider is a spider inherit from the generic CrawlSpider, and
+    responsible for vacancies scraping on Glassdoor,
     """
 
     @staticmethod
