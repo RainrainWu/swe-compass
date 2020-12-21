@@ -1,5 +1,6 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
+from scrapy.utils.project import get_project_settings
 from scrapy.spiders import CrawlSpider, Rule
 
 from scraper.loaders import JobDescriptionLoader
@@ -12,11 +13,12 @@ class GlassdoorSpider(CrawlSpider):
     """
 
     @staticmethod
-    def __generate_start_urls(page_count: int = 1):
+    def __generate_start_urls():
         """
         generate_start_urls was designed for generating a series of job search
         url of Glassdoor with different slice through \"p\" url parameter.
         """
+        page_count = get_project_settings().get("GLASSDOOR_SCRAPER_PAGECOUNT")
         if page_count < 1:
             raise ValueError(
                 f"generate start_urls failed, page_count must be a integer greater than 0, got {page_count}"
@@ -32,13 +34,14 @@ class GlassdoorSpider(CrawlSpider):
 
     name = "glassdoor"
     allowed_domains = ["www.glassdoor.com"]
-    start_urls = __generate_start_urls.__func__(1)
+    start_urls = __generate_start_urls.__func__()
     rules = (
         Rule(
             LinkExtractor(allow=r"glassdoor.com/partner/jobListing.htm"),
             callback="parse_item",
         ),
     )
+    custom_settings = {"FEED_URI": "glassdoor.json"}
     xpath_mappings = {
         "title": [
             "/html/body/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/div/div[1]/div[2]/div/div/div[2]/text()",

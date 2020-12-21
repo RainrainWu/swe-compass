@@ -18,3 +18,7 @@ class Runner:
         for spider in self.spiders:
             self.process.crawl(spider)
         self.process.start()
+
+
+runner = Runner()
+runner.run_all()

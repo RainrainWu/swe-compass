@@ -18,13 +18,17 @@ class JobDescriptionLoader(ItemLoader):
         __flatten is a string processor to flatten the hierarchical DOM tree
         into plain text, and also strip redundant seperators.
         """
-        return re.sub(
-            "( | |\n|\r|\t)+",
-            " ",
-            replace_tags(digest, " "),
-        ).strip()
+        return (
+            re.sub(
+                "( | |\n|\r|\t)+",
+                " ",
+                replace_tags(digest, " "),
+            )
+            .strip()
+            .lower()
+        )
 
-    __standardize = Compose(TakeFirst(), lambda x: x.strip())
+    __standardize = Compose(TakeFirst(), lambda x: x.strip().lower())
     __standardize_description = Compose(TakeFirst(), __flatten.__func__)
 
     default_item_class = JobDescriptionItem
