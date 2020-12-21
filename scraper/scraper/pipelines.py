@@ -5,9 +5,9 @@
 
 
 # useful for handling different item types with a single interface
-from scrapy.utils.project import get_project_settings
 from itemadapter import ItemAdapter
-from elasticsearch import Elasticsearch
+
+from es_handler import elasticsearch_handler
 
 
 class ScraperPipeline:
@@ -22,22 +22,8 @@ class ElasticsearchPipeline:
     """
 
     def __init__(self):
-        self.id_ptr = 1
-        self.settings = get_project_settings()
-        self.es_cli = Elasticsearch(
-            hosts=[
-                {
-                    "host": self.settings["ELASTICSEARCH_HOST"],
-                    "port": self.settings["ELASTICSEARCH_PORT"],
-                }
-            ]
-        )
+        self.es_handler = elasticsearch_handler
 
     def process_item(self, item, spider):
-        index_name = self.settings["ELASTICSEARCH_INDEX"]
-        result = self.es_cli.index(
-            index=index_name, doc_type="post", id=self.id_ptr, body=dict(item)
-        )
-        self.id_ptr += 1
-        print(result)
+        self.es_handler.write_index(dict(item))
         return item

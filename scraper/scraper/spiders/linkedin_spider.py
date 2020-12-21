@@ -1,5 +1,6 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
+from scrapy.utils.project import get_project_settings
 from scrapy.spiders import CrawlSpider, Rule
 
 from scraper.loaders import JobDescriptionLoader
@@ -12,11 +13,12 @@ class LinkedinSpider(CrawlSpider):
     """
 
     @staticmethod
-    def __generate_start_urls(page_count: int = 1):
+    def __generate_start_urls():
         """
         generate_start_urls was designed for generating a series of job search
         url of LinkedIn with different slice through \"start\" url parameter.
         """
+        page_count = get_project_settings().get("LINKEDIN_SCRAPER_PAGECOUNT")
         if page_count < 1:
             raise ValueError(
                 f"generate start_urls failed, page_count must be a integer greater than 0, got {page_count}"
@@ -32,10 +34,11 @@ class LinkedinSpider(CrawlSpider):
 
     name = "linkedin"
     allowed_domains = ["linkedin.com"]
-    start_urls = __generate_start_urls.__func__(1)
+    start_urls = __generate_start_urls.__func__()
     rules = (
         Rule(LinkExtractor(allow=r"linkedin.com/jobs/view/*"), callback="parse_item"),
     )
+    custom_settings = {"FEED_URI": "linkedin.json"}
     xpath_mappings = {
         "title": "/html/body/main/section[1]/section[2]/div[1]/div[1]/h1/text()",
         "company": "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[1]/a/text()",
