@@ -35,6 +35,9 @@ class LinkedinSpider(CrawlSpider):
     )
 
     def parse_item(self, response):
+        if response.status == 500:
+            print(response.body)
+
         loader = JobDescriptionLoader(response=response)
         loader.add_xpath(
             "title", "/html/body/main/section[1]/section[2]/div[1]/div[1]/h1/text()"
@@ -52,26 +55,6 @@ class LinkedinSpider(CrawlSpider):
         )
         return loader.load_item()
 
-        """
-        jd_item = {}
-        jd_item["title"] = response.xpath(
-            "/html/body/main/section[1]/section[2]/div[1]/div[1]/h1/text()"
-        ).get()
-        jd_item["company"] = response.xpath(
-            "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[1]/a/text()"
-        ).get()
-        jd_item["location"] = response.xpath(
-            "/html/body/main/section[1]/section[2]/div[1]/div[1]/h3[1]/span[2]/text()"
-        ).get()
-
-        description = response.xpath(
-            "/html/body/main/section[1]/section[3]/div/section/div"
-        ).extract_first()
-        jd_item["description"] = re.sub(
-            "( |\n)+",
-            " ",
-            replace_tags(description, " "),
-        ).strip()
-
-        yield jd_item
-        """
+    def after_500(self, response):
+        print("\n\n\n\n")
+        print(response.url)
