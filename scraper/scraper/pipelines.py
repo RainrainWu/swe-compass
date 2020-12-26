@@ -15,6 +15,16 @@ class ScraperPipeline:
         return item
 
 
+class DefaultValuePipeline(object):
+    """
+    docstring
+    """
+
+    def process_item(self, item, spider):
+        item.setdefault("description", "")
+        return item
+
+
 class ElasticsearchPipeline:
     """
     ElasticsearchPipeline is responsible for writing scraping results
