@@ -27,7 +27,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 0.25
+DOWNLOAD_DELAY = 0.25
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -66,6 +66,7 @@ DEFAULT_REQUEST_HEADERS = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "scraper.pipelines.ScraperPipeline": 300,
+    "scraper.pipelines.DefaultValuePipeline": 350,
     # turn off this pipeline if your elasticsearch cluster is not ready
     "scraper.pipelines.ElasticsearchPipeline": 400,
 }
@@ -96,7 +97,7 @@ LOG_LEVEL = "INFO"
 
 # Scraper workload
 # Each page of Linkedin job search result contains 20~25 job posts.
-LINKEDIN_SCRAPER_PAGECOUNT = 5
+LINKEDIN_SCRAPER_PAGECOUNT = 50
 # Each page of Glassdoor job search result contains 30~33 job posts.
 GLASSDOOR_SCRAPER_PAGECOUNT = 3
 
