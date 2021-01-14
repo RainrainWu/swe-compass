@@ -12,7 +12,7 @@ class Runner:
 
     def __init__(self):
         self.process = CrawlerProcess(get_project_settings())
-        self.spiders = [LinkedinSpider]
+        self.spiders = [GlassdoorSpider]
 
     def run_all(self):
         for spider in self.spiders:
