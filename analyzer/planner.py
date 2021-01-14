@@ -3,8 +3,8 @@ import json
 from config import AnalyzerLanguagesConfig, AnalyzerDegreesConfig
 from analyzer.executor import Executor
 
-class Planner:
 
+class Planner:
     def __init__(self, config):
         self.config = config
 
@@ -21,13 +21,13 @@ class Planner:
             AnalyzerLanguagesConfig.programming_languages
         )
         print(json.dumps(result, indent=4))
-    
+
     def rank_public_clouds(self):
         result = Executor.get_each_term_percents(
             AnalyzerLanguagesConfig.public_clouds,
         )
         print(json.dumps(result, indent=4))
-    
+
     def rank_degrees(self):
         result = {
             "bs_degree": Executor.get_union_percent(

@@ -6,9 +6,9 @@ from analyzer.es_handler import elasticsearch_handler
 class Executor:
     es = elasticsearch_handler
     doc_count = int(
-        es.es_cli.cat.count(
-            index="job_description", params={"format": "json"}
-        )[0]["count"]
+        es.es_cli.cat.count(index="job_description", params={"format": "json"})[0][
+            "count"
+        ]
     )
 
     @classmethod
@@ -18,8 +18,8 @@ class Executor:
                 "bool": {
                     "should": [
                         {"match_phrase": {"description": item}}
-                        if " " in item else
-                        {"match": {"description": item}}
+                        if " " in item
+                        else {"match": {"description": item}}
                         for item in items
                     ],
                     "minimum_should_match": 1,
@@ -37,8 +37,8 @@ class Executor:
                 "bool": {
                     "must": [
                         {"match_phrase": {"description": item}}
-                        if " " in item else
-                        {"match": {"description": item}}
+                        if " " in item
+                        else {"match": {"description": item}}
                         for item in items
                     ]
                 }
@@ -53,7 +53,12 @@ class Executor:
 
         hold = {}
         for phrase in phrases:
-            query = {"query": {"match_phrase" if " " in item else "match": {"description": phrase}}, "size": 0}
+            query = {
+                "query": {
+                    "match_phrase" if " " in item else "match": {"description": phrase}
+                },
+                "size": 0,
+            }
             result = cls.es.es_cli.search(index="job_description", body=query)
             percent = result["hits"]["total"]["value"] / cls.doc_count
             hold[phrase] = round(percent * 100, 2)

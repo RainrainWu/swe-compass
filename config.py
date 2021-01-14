@@ -6,6 +6,7 @@ class PlannerConfig:
         "rank_degrees": True,
     }
 
+
 class AnalyzerLanguagesConfig:
 
     programming_languages = [
@@ -25,6 +26,7 @@ class AnalyzerLanguagesConfig:
         "azure",
         "gcp",
     ]
+
 
 class AnalyzerDegreesConfig:
     bs_degrees = [
